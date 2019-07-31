@@ -1,6 +1,10 @@
 # Ansible
 *.retry
 
+# IntelliJ
+.idea
+ci/cloud/cloud.iml
+
 # Python
 .mypy_cache/
 *.pyc
