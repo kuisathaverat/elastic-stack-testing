@@ -5,7 +5,6 @@
 
  */
 
-import com.sun.org.apache.xalan.internal.xslt.Process
 import org.estf.gradle.CreateCloudCluster
 import org.estf.gradle.DeleteCloudCluster
 import org.estf.gradle.EditCloudCluster
@@ -13,7 +12,6 @@ import org.estf.gradle.UpgradeCloudCluster
 import org.estf.gradle.UploadData
 import org.estf.gradle.ShellCommand
 import org.ajoberstar.grgit.Grgit
-import groovy.json.JsonSlurper
 
 
 plugins {
