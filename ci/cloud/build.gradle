@@ -80,7 +80,7 @@ def genUpgradeTask(testname, cluster_id, kibana_cluster_id, major_upgrade) {
 task createElasticCloudCluster {
     doFirst {
         // Setup cloud cluster
-        def _setup_task = genSetupTask('test_cluster')
+        def _setup_task = genSetupTask('kibana')
         _setup_task.execute()
 
         def propFile = _setup_task.getPropertiesFile()
