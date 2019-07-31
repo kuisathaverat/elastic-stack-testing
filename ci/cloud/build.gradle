@@ -76,6 +76,63 @@ def genUpgradeTask(testname, cluster_id, kibana_cluster_id, major_upgrade) {
 }
 
 /*
+ General tasks
+ */
+
+task createElasticCloudCluster {
+    doFirst {
+        // Setup cloud cluster
+        def _setup_task = genSetupTask('test_cluster')
+        _setup_task.execute()
+
+        def propFile = _setup_task.getPropertiesFile()
+
+        // Load properties file
+        Properties properties = new Properties()
+        File propertiesFile = new File(propFile.trim())
+        propertiesFile.withInputStream {
+            properties.load(it)
+        }
+
+        URI kibanaUri = new URI(properties.kibana_url)
+        URI elasticUri = new URI(properties.elasticsearch_url)
+
+        // Add system environment variables
+        def envList = []
+        System.getenv().each { key, value ->
+            envList.add(key + "=" + value)
+        }
+
+        println "**************"
+        println System.getenv().get("")
+        println "**************"
+
+        // Add specific Kibana environment variables
+        envList.add("TEST_KIBANA_HOSTNAME=" + kibanaUri?.getHost())
+        envList.add("TEST_KIBANA_PROTOCOL=" + 'https')
+        envList.add("TEST_KIBANA_PORT=" + kibanaUri?.getPort())
+        envList.add("TEST_KIBANA_USER=" + properties.es_username)
+        envList.add("TEST_KIBANA_PASS=" + properties.es_password)
+
+        envList.add("TEST_ES_HOSTNAME=" + elasticUri?.getHost())
+        envList.add("TEST_ES_PROTOCOL=" + 'https')
+        envList.add("TEST_ES_PORT=" + elasticUri?.getPort())
+        envList.add("TEST_ES_USER=" + properties.es_username)
+        envList.add("TEST_ES_PASS=" + properties.es_password)
+
+        def _cleanup_task = genCleanupTask('kibana', _setup_task.getClusterId())
+        _cleanup_task.execute()
+    }
+}
+
+task destroyElasticCloudCluster {
+    doFirst {
+        def _cleanup_task = genCleanupTask('kibana', "_setup_task.getClusterId()")
+        _cleanup_task.execute()
+    }
+}
+
+/*
  Kibana
  */
 task get_kibana_repo {
